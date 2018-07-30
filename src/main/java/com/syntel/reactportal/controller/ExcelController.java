@@ -4,11 +4,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -51,17 +50,19 @@ public class ExcelController {
 
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST, value = "/return")
-    public HttpEntity<byte[]> returnExcelFile(@RequestParam("files") MultipartFile[] excelFiles, HttpServletResponse response) throws IllegalStateException, IOException {
-        byte[] excelContent = excelFiles[0].getBytes();
-        Workbook wb = typedWorkbook(excelFiles[0], excelFiles[0].getInputStream());
-//        FileOutputStream out = new FileOutputStream();
-//        wb.write(out);
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(new MediaType("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=my_file.xls");
-        header.setContentLength(excelContent.length);
-        response.setContentType("application/vnd.ms-excel");
-        return new HttpEntity<byte[]>(excelContent, header);
+    public void returnExcelFile(@RequestParam("files") MultipartFile[] excelFiles, HttpServletResponse response) {
+        try {
+            Workbook wb = WorkbookFactory.create(excelFiles[0].getInputStream());
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("Content-Disposition", "attachment; filename=" + excelFiles[0].getOriginalFilename());
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            wb.write(bos);
+            response.setContentLength(bos.size());
+            wb.write(response.getOutputStream());
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+
     }
 
     public Workbook typedWorkbook(MultipartFile file, InputStream inputStream) throws IOException {
