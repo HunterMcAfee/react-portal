@@ -19,15 +19,16 @@ class UploadReturn extends Component {
             formData.append(`files`, files[i]);
         }
         let config = {
-          responseType: 'arraybuffer' 
+            responseType: 'arraybuffer'
         }
         axios.post(`http://localhost:8080/file/return`, formData, config)
             .then((res) => {
-                fileDownload(res.data, 'demo.xls')
-                // let json = JSON.stringify(res.data);
-                // let blob = new Blob([res.data], {type: "application/vnd.ms-excel"});
-                // let url = window.URL.createObjectURL(blob);
-                // window.open(url);
+                // fileDownload(res.data, 'demo.xls')
+                let json = JSON.stringify(res.data);
+                console.log(res);
+                let blob = new Blob([res.data],{ type: "application/vnd.ms-excel" });
+                let url = window.URL.createObjectURL(blob);
+                window.open(url);
             })
             .catch((error) => {
                 console.log(error);
