@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 
-@RequestMapping("/file")
+@RequestMapping("/excel")
 @RestController
 public class ExcelController {
     @Autowired

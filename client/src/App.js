@@ -8,9 +8,16 @@ class App extends Component {
   render() {
     return (
       <div>
-        <FileUpload />
+        <h2>EXCEL</h2>
+        <h6>Upload</h6>
+        <FileUpload apiEndpoint={"excel/read"} />
         <p>----------------------</p>
-        <UploadReturn />
+        <h6>Upload and Return</h6>
+        <UploadReturn apiEndpoint={"excel/return"} format={"application/vnd.ms-excel"} />
+        <p>----------------------</p>
+        <h2>PDF</h2>
+        <h6>Upload</h6>
+        <UploadReturn apiEndpoint={"pdf/merge"} format={"application/pdf"} />
       </div>
     );
   }

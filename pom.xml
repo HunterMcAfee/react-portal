@@ -22,6 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<itext.version>RELEASE</itext.version>
 	</properties>
 
 	<dependencies>
@@ -60,6 +61,13 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml-schemas</artifactId>
 			<version>3.17</version>
+		</dependency>
+		<!-- add all iText 7 Community modules -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext7-core</artifactId>
+			<version>7.1.2</version>
+			<type>pom</type>
 		</dependency>
 
 	</dependencies>

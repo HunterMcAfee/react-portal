@@ -3,8 +3,8 @@ import axios from 'axios';
 import fileDownload from 'js-file-download';
 
 class UploadReturn extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.uploadInput = React.createRef();
         this.state = {
 
@@ -21,12 +21,12 @@ class UploadReturn extends Component {
         let config = {
             responseType: 'arraybuffer'
         }
-        axios.post(`http://localhost:8080/file/return`, formData, config)
+        axios.post(`http://localhost:8080/${this.props.apiEndpoint}`, formData, config)
             .then((res) => {
                 // fileDownload(res.data, 'demo.xls')
                 let json = JSON.stringify(res.data);
                 console.log(res);
-                let blob = new Blob([res.data],{ type: "application/vnd.ms-excel" });
+                let blob = new Blob([res.data],{ type: `${this.props.format}` });
                 let url = window.URL.createObjectURL(blob);
                 window.open(url);
             })

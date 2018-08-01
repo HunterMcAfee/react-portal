@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 class FileUpload extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.uploadInput = React.createRef();
         this.state = {
 
@@ -17,7 +17,7 @@ class FileUpload extends Component {
         for (let i = 0; i < files.length; i++) {
             formData.append(`files`, files[i]);
         }
-        axios.post(`http://localhost:8080/file/read`, formData)
+        axios.post(`http://localhost:8080/${this.props.apiEndpoint}`, formData)
             .then((res) => {
                 console.log(res);
             })
