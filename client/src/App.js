@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import FileUpload from './components/FileUpload';
 import UploadReturn from './components/UploadReturn';
+import ReactTable from './components/ReactTable';
 
 class App extends Component {
   render() {
@@ -16,8 +17,14 @@ class App extends Component {
         <UploadReturn apiEndpoint={"excel/return"} format={"application/vnd.ms-excel"} />
         <p>----------------------</p>
         <h2>PDF</h2>
-        <h6>Upload</h6>
+        <h6>Upload to DB</h6>
+        <FileUpload apiEndpoint={"pdf/upload"} />
+        <p>----------------------</p>
+        <h6>Merge</h6>
         <UploadReturn apiEndpoint={"pdf/merge"} format={"application/pdf"} />
+        <p>----------------------</p>
+        <h2>Grid</h2>
+        <ReactTable />
       </div>
     );
   }
