@@ -37,13 +37,21 @@ class ReactTable extends Component {
         return (
             <div>
                 <Table
-                    width={window.innerWidth}
+                    width={window.innerWidth / 2}
                     height={300}
                     headerHeight={20}
                     rowHeight={30}
                     onRowClick={this._changeCartStatus}
                     rowCount={this.state.list.length}
                     rowGetter={({ index }) => this.state.list[index]}
+                    rowClassName={({ index: number }) => {
+                        if (this.state.cart.includes(number)) {
+                            console.log("Render")
+                            return "ReactVirtualized__Table__selected"
+                        } else {
+                            return "ReactVirtualized__Table__row"
+                        }
+                    }}
                 >
                     <Column
                         label='Name'

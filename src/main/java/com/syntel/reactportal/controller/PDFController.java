@@ -5,12 +5,17 @@ import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import com.itextpdf.kernel.utils.PdfMerger;
+import com.syntel.reactportal.model.PDFModel;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.sql.Types;
+import java.util.List;
 
 @RequestMapping("/pdf")
 @RestController
@@ -56,9 +64,11 @@ public class PDFController {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfDocument pdfDocument = new PdfDocument(new PdfReader(pdfFiles[0].getInputStream()), new PdfWriter(baos));
         LobHandler lobHandler = new DefaultLobHandler();
-        byte[] bytes = baos.toByteArray();
         String name = pdfDocument.getDocumentInfo().getTitle();
         String description = pdfDocument.getDocumentInfo().getAuthor();
+        pdfDocument.close();
+        byte[] bytes = baos.toByteArray();
+        baos.close();
         jdbcTemplate.update(
                 "INSERT INTO PORTAL.PDF (name, content, description) VALUES (?, ?, ?)",
                 new Object[] {
@@ -67,5 +77,16 @@ public class PDFController {
                         new SqlLobValue(description, lobHandler)
                 },
                 new int[] {Types.VARCHAR, Types.BLOB, Types.CLOB});
+    }
+
+    @CrossOrigin
+    @GetMapping("/getPdf/{id}")
+    public void getPdfFiles(@PathVariable("id") int id, HttpServletResponse response) throws SQLException, IOException  {
+        String getPdf = "SELECT * FROM portal.pdf WHERE pdf_id = ?";
+        Object[] arguments = {id};
+        List<PDFModel> results = jdbcTemplate.query(getPdf, arguments, new BeanPropertyRowMapper(PDFModel.class));
+        System.out.println(results.get(0).getName());
+        Blob pdfBlob = results.get(0).getContent();
+        IOUtils.copy(pdfBlob.getBinaryStream(), response.getOutputStream());
     }
 }

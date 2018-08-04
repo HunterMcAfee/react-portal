@@ -4,6 +4,7 @@ import './App.css';
 import FileUpload from './components/FileUpload';
 import UploadReturn from './components/UploadReturn';
 import ReactTable from './components/ReactTable';
+import Download from './components/Download';
 
 class App extends Component {
   render() {
@@ -22,6 +23,9 @@ class App extends Component {
         <p>----------------------</p>
         <h6>Merge</h6>
         <UploadReturn apiEndpoint={"pdf/merge"} format={"application/pdf"} />
+        <p>----------------------</p>
+        <h6>Download</h6>
+        <Download apiEndpoint={"pdf/getPdf"} format={"application/pdf"} fileType="PDF" />
         <p>----------------------</p>
         <h2>Grid</h2>
         <ReactTable />
