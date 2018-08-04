@@ -2,23 +2,27 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Column, Table } from 'react-virtualized';
 import 'react-virtualized/styles.css'; // only needs to be imported once
+import axios from 'axios';
 
 class ReactTable extends Component {
     constructor() {
         super();
         this.state = {
-            list: [
-                { name: 'Brian Vaughn', description: 'Software engineer' },
-                { name: 'Brian Vaughn', description: 'Software engineer' },
-                { name: 'Brian Vaughn', description: 'Software engineer' },
-                { name: 'Brian Vaughn', description: 'Software engineer' },
-                { name: 'Brian Vaughn', description: 'Software engineer' },
-                { name: 'Brian Vaughn', description: 'Software engineer' },
-                { name: 'Brian Vaughn', description: 'Software engineer' },
-                { name: 'Brian Vaughn', description: 'Software engineer' }
-            ],
+            list: [],
             cart: []
         }
+    }
+
+    componentDidMount() {
+        axios.get(`http://localhost:8080/pdf/getPdfFiles`)
+            .then((res) => {
+                this.setState({
+                    list: res.data
+                })
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 
     _changeCartStatus = ({ event: Event, index: number, rowData: any }) => {
@@ -38,7 +42,7 @@ class ReactTable extends Component {
             <div>
                 <Table
                     width={window.innerWidth / 2}
-                    height={300}
+                    height={700}
                     headerHeight={20}
                     rowHeight={30}
                     onRowClick={this._changeCartStatus}
@@ -54,9 +58,14 @@ class ReactTable extends Component {
                     }}
                 >
                     <Column
+                        label='ID'
+                        dataKey='pdf_id'
+                        width={200}
+                    />
+                    <Column
                         label='Name'
                         dataKey='name'
-                        width={200}
+                        width={300}
                     />
                     <Column
                         width={200}

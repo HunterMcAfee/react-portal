@@ -5,6 +5,7 @@ import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import com.itextpdf.kernel.utils.PdfMerger;
+import com.syntel.reactportal.model.PDFIdDescriptionModel;
 import com.syntel.reactportal.model.PDFModel;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,5 +89,13 @@ public class PDFController {
         System.out.println(results.get(0).getName());
         Blob pdfBlob = results.get(0).getContent();
         IOUtils.copy(pdfBlob.getBinaryStream(), response.getOutputStream());
+    }
+
+    @CrossOrigin
+    @GetMapping("/getPdfFiles")
+    public List<PDFIdDescriptionModel> getAllPdfFilesId(HttpServletResponse response) throws SQLException, IOException  {
+        String getPdfs = "SELECT * FROM portal.pdf";
+        List<PDFIdDescriptionModel> results = jdbcTemplate.query(getPdfs, new BeanPropertyRowMapper(PDFIdDescriptionModel.class));
+        return results;
     }
 }
